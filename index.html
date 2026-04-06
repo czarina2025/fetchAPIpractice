@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fetch API Example</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        #todo-list { list-style: none; padding: 0; }
+        li { padding: 8px; border-bottom: 1px solid #eee; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>My To-Do List</h1>
+    <button id="fetch-btn">Get To-Dos</button>
+    <ul id="todo-list"></ul>
+    <p id="status-msg"></p>
+
+    <script>
+        // 1. Select DOM elements
+        const btn = document.getElementById('fetch-btn');
+        const list = document.getElementById('todo-list');
+        const status = document.getElementById('status-msg');
+
+        // 2. Define the async fetch function
+        async function getTodos() {
+            const url = "https://typicode.com";
+            status.textContent = "Loading...";
+            list.innerHTML = ""; // Clear list
+
+            try {
+                // Perform the fetch request
+                const response = await fetch(url);
+
+                // Check if the HTTP response status is OK (200-299)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Parse the response body as JSON
+                const data = await response.json();
+
+                // 3. Render the data to the page
+                data.forEach(todo => {
+                    const li = document.createElement('li');
+                    li.textContent = `${todo.completed ? '✅' : '❌'} ${todo.title}`;
+                    list.appendChild(li);
+                });
+
+                status.textContent = "Data fetched successfully!";
+            } catch (error) {
+                // Handle network or parsing errors
+                console.error("Fetch error:", error);
+                status.textContent = "Failed to load data.";
+                status.className = "error";
+            }
+        }
+
+        // 4. Attach event listener
+        btn.addEventListener('click', getTodos);
+    </script>
+</body>
+</html>
